@@ -1,0 +1,30 @@
+{
+    "screen": {
+        "fullscreen": [
+            true,
+            2
+        ],
+        "resolution": [
+            "Automatic",
+            0
+        ]
+    },
+    "font": {
+        "credits_path": "fonts/Inconsolata-VariableFont_wdth,wght.ttf",
+        "text_path": "fonts/CubicPixel-lgEmy.otf",
+        "title_path": "fonts/CubicPixel-lgEmy.otf"
+    },
+    "music_path": "music/peritune-spook4.mp3",
+    "settings": {
+        "max_fps": 60,
+        "entry_level": 1,
+        "sounds_on": [
+            "On",
+            4
+        ],
+        "music_on": [
+            "Off",
+            1
+        ]
+    }
+}

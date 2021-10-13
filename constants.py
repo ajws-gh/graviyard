@@ -1,0 +1,19 @@
+BLACK = 0, 0, 0
+RED = 255, 0, 0
+YELLOW = 255, 193, 7
+BG_COLOR = 13, 21, 22
+ORANGE = 242, 112, 31
+
+S_JUMP = 'jump'
+S_IDLE = 'idle'
+S_ZOMBIE_DEAD = 'zombie_dead'
+S_FALL = 'fall'
+S_RUN = 'run'
+S_WALK = 'walk'
+
+ZOMBIE_SPEED = 25
+JUMP_SPEED = 800
+MOVE_SPEED = 350
+GRAVITY = 700
+FALL_GRAVITY = 750
+STILL_RUN = 16
