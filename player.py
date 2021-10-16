@@ -1,5 +1,6 @@
-from static_methods import *
+import pygame
 from constants import *
+from config import config
 import sprites
 
 
@@ -89,25 +90,25 @@ class Status:
         self.player = player
         self.block_size = player.block_size
         if self.name == S_IDLE:
-            self.index, self.count, self.elapsed = idle_props()
+            self.index, self.count, self.elapsed = self.idle_props()
             self.player.sprite = S_IDLE
             self.keyboard = self.idle_keyboard
             self.update = self.idle_update
         if self.name == S_FALL:
             player.fall_time = 0
-            self.index, self.count, self.elapsed = fall_props()
+            self.index, self.count, self.elapsed = self.fall_props()
             self.player.sprite = S_FALL
             self.keyboard = self.fall_keyboard
             self.update = self.fall_update
             self.add_gravity = 0
         if self.name == S_RUN:
-            self.index, self.count, self.elapsed = run_props()
+            self.index, self.count, self.elapsed = self.run_props()
             self.player.sprite = S_RUN
             self.keyboard = self.run_keyboard
             self.update = self.run_update
         if self.name == S_JUMP:
             player.jump_time = 0
-            self.index, self.count, self.elapsed = jump_props()
+            self.index, self.count, self.elapsed = self.jump_props()
             self.player.sprite = S_JUMP
             self.keyboard = self.jump_keyboard
             self.update = self.jump_update
@@ -271,3 +272,24 @@ class Status:
             self.player.x_speed = 0
             self.player.x = block[-2] * self.block_size - self.player.width
             return block
+
+    @staticmethod
+    def idle_props():
+        index, count, elapsed = 0, 10, 0
+        return index, count, elapsed
+
+    @staticmethod
+    def fall_props():
+        index, count, elapsed = 0, 4, 0
+        return index, count, elapsed
+
+    @staticmethod
+    def run_props():
+        index, count, elapsed = 0, 4, 0
+        return index, count, elapsed
+
+    @staticmethod
+    def jump_props():
+        index, count, elapsed = 0, 5, 0
+        return index, count, elapsed
+

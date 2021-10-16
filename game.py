@@ -1,7 +1,9 @@
+import pygame
 import json
 from random import randint
-from static_methods import *
 from constants import *
+from config import config
+from menu import menu
 from camera import Camera
 from player import Player, Status
 from zombie import Zombie, ZombieStatus
@@ -58,21 +60,22 @@ class Game:
                     self.running = False
                     break
                 if event.type == pygame.KEYDOWN:
-                    if adding_user():
+                    if self.adding_user():
                         # Setting up player's nickname
-                        play_sound('type')
+                        self.play_sound('type')
                         menu.append_to_name(event.key)
                     elif event.key == pygame.K_p and config.game_started:
-                        play_sound('select')
+                        self.play_sound('select')
                         self.pause = not self.pause
                     elif event.key == pygame.K_r and config.game_started:
-                        play_sound('level_up')
+                        self.play_sound('level_up')
                         self.restart()
                     elif event.key == pygame.K_n and config.game_started:
                         self.level_up()
                         continue
                     elif event.key == pygame.K_ESCAPE:
-                        play_sound('select')
+                        if not menu.draw == menu.draw_menu:
+                            self.play_sound('select')
                         if not menu.settings_active:
                             # Escape key action while none setting is activated
                             if not menu.draw == menu.draw_menu:
@@ -105,39 +108,38 @@ class Game:
 
                     # Navigating the menu
                     # K_DOWN
-                    elif event.key == pygame.K_DOWN and arrows_up_down_condition():
-                        play_sound('arrow_sound')
+                    elif event.key == pygame.K_DOWN and self.arrows_up_down_condition():
+                        self.play_sound('arrow_sound')
                         menu.index += 1
 
                     # K_UP
-                    elif event.key == pygame.K_UP and arrows_up_down_condition():
-                        play_sound('arrow_sound')
+                    elif event.key == pygame.K_UP and self.arrows_up_down_condition():
+                        self.play_sound('arrow_sound')
                         menu.index -= 1
 
                     # K_LEFT
-                    elif event.key == pygame.K_LEFT and arrows_l_r_condition():
+                    elif event.key == pygame.K_LEFT and self.arrows_l_r_condition():
                         # Navigating Left/Right the settings menu
-                        play_sound('arrow_sound')
+                        self.play_sound('arrow_sound')
                         if menu.draw == menu.draw_how_to_play:
                             menu.lr_index -= 1
                         else:
-                            inc_dec_lr_indexes('-')
+                            self.inc_dec_lr_indexes('-')
 
                     # K_RIGHT
-                    elif event.key == pygame.K_RIGHT and arrows_l_r_condition():
+                    elif event.key == pygame.K_RIGHT and self.arrows_l_r_condition():
                         # Navigating Left/Right the settings menu
-                        play_sound('arrow_sound')
+                        self.play_sound('arrow_sound')
                         if menu.draw == menu.draw_how_to_play:
                             menu.lr_index += 1
                         else:
-                            inc_dec_lr_indexes('+')
+                            self.inc_dec_lr_indexes('+')
 
                     # ENTER
-
                     elif event.key == pygame.K_RETURN:
                         # Navigating the settings menu - choosing options and changing them
                         if menu.draw == menu.draw_settings:
-                            play_sound('select')
+                            self.play_sound('select')
                             if not menu.settings_active:
                                 menu.settings_active = True
                                 menu.level_index = config.entry_level
@@ -181,44 +183,45 @@ class Game:
                                     config.save_settings_to_file('sounds', menu.sound_index)
                                 menu.settings_active = False
 
-                        if is_menu():
+                        if self.is_menu():
                             # Starts the game
                             if menu.index % 6 == 0:
-                                play_sound('select')
+                                self.play_sound('select')
                                 self.load(str(config.entry_level).zfill(3))
+                                menu.draw = None
                                 config.game_started = True
 
                             # Enters how to play section
                             elif menu.index % 6 == 1:
-                                play_sound('select')
+                                self.play_sound('select')
                                 menu.lr_index = 0
                                 menu.draw = menu.draw_how_to_play
 
                             # Enters settings
                             elif menu.index % 6 == 2:
-                                play_sound('select')
+                                self.play_sound('select')
                                 menu.index = 0
                                 menu.draw = menu.draw_settings
 
                             # Enters credits
                             elif menu.index % 6 == 3:
-                                play_sound('select')
+                                self.play_sound('select')
                                 menu.draw = menu.draw_credits
 
                             # Enters top scores
                             elif menu.index % 6 == 4:
-                                play_sound('select')
+                                self.play_sound('select')
                                 menu.draw = menu.draw_top_scores
 
                             # Exit Game
                             elif menu.index % 6 == 5:
-                                play_sound('select')
+                                self.play_sound('select')
                                 self.running = False
 
             if config.game_started:
 
-                camera_x = follow(self.camera.pos['x'], self.player.x, 4 * self.delay)
-                camera_y = follow(self.camera.pos['y'], self.player.y, 4 * self.delay)
+                camera_x = self.follow(self.camera.pos['x'], self.player.x, 4 * self.delay)
+                camera_y = self.follow(self.camera.pos['y'], self.player.y, 4 * self.delay)
 
                 self.camera.pos["x"] = camera_x
                 self.camera.pos["y"] = camera_y
@@ -229,7 +232,7 @@ class Game:
                 for zombie in self.zombies:
                     if not self.pause:
                         if zombie.update(self.delay, self.player) == 'jump':
-                            play_sound('hit_sound')
+                            self.play_sound('hit_sound')
                             self.time += 1
                             self.player.status = Status(S_JUMP, self.player)
                             self.player.y_speed = -4 * JUMP_SPEED
@@ -350,7 +353,7 @@ class Game:
         menu.score = self.score
         try:
             self.load(str(config.current_level).zfill(3))
-            play_sound('level_up')
+            self.play_sound('level_up')
         except FileNotFoundError:
             config.game_started = False
             config.current_level = config.entry_level
@@ -368,6 +371,7 @@ class Game:
                     possible_places.append(block)
         pos_len = len(possible_places)
 
+        # TODO: to change!
         for i in range(pos_len):
             for j in range(i + 1, pos_len):
                 for k in range(j + 1, pos_len):
@@ -439,6 +443,58 @@ class Game:
             self.restart()
         elif self.player.x + self.player.width < 0:
             self.restart()
+
+    @staticmethod
+    def adding_user():
+        return menu.draw == menu.draw_top_scores and menu.appending
+
+    @staticmethod
+    def play_sound(sound):
+        if config.sounds_on[0] == 'On':
+            if sound == 'select':
+                config.select_sound.play()
+            elif sound == 'type':
+                config.type_sound.play()
+            elif sound == 'level_up':
+                config.level_up_sound.play()
+            elif sound == 'arrow_sound':
+                config.arrow_sound.play()
+            elif sound == 'hit_sound':
+                config.hit_sound.play()
+
+    @staticmethod
+    def inc_dec_lr_indexes(symbol):
+        exec(f'menu.lr_index {symbol}= 1')
+        if menu.index % 6 == 0:
+            exec(f'menu.fullscreen_index {symbol}= 1')
+        elif menu.index % 6 == 1:
+            exec(f'menu.res_index {symbol}= 1')
+        elif menu.index % 6 == 2:
+            exec(f'menu.max_fps {symbol}= 5')
+        elif menu.index % 6 == 3:
+            exec(f'menu.level_index {symbol}= 1')
+        elif menu.index % 6 == 4:
+            exec(f'menu.music_index {symbol}= 1')
+        elif menu.index % 6 == 5:
+            exec(f'menu.sound_index {symbol}= 1')
+
+    @staticmethod
+    def arrows_l_r_condition():
+        return (menu.settings_active or menu.draw == menu.draw_how_to_play) and not config.game_started
+
+    @staticmethod
+    def is_menu():
+        return menu.draw == menu.draw_menu and not config.game_started
+
+    @staticmethod
+    def arrows_up_down_condition():
+        return not menu.draw == menu.draw_credits and not menu.draw == menu.draw_top_scores and \
+               not menu.draw == menu.draw_how_to_play and not config.game_started and not menu.settings_active
+
+    @staticmethod
+    def follow(camera_pos, player_pos, speed):
+        """Adds delay to camera"""
+        return camera_pos + (player_pos - camera_pos) * speed
 
 
 instance = Game()

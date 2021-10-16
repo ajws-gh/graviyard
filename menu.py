@@ -1,5 +1,6 @@
+import pygame
 from constants import *
-from static_methods import *
+from config import config
 
 
 pygame.font.init()
@@ -62,20 +63,20 @@ class Menu:
 
     def draw_menu(self):
         self.screen.blit(config.menu_bg, (0, 0))
-        self.screen.blit(self.title, (center_text(self.title), config.y_const))
-        self.screen.blit(self.new_game, (center_text(self.new_game), config.menu_start_y))
+        self.screen.blit(self.title, (self.center_text(self.title), config.y_const))
+        self.screen.blit(self.new_game, (self.center_text(self.new_game), config.menu_start_y))
         self.screen.blit(self.how_to_play,
-                         (center_text(self.how_to_play), config.menu_start_y + config.menu_y_space))
-        self.screen.blit(self.settings, (center_text(self.settings), config.menu_start_y +
+                         (self.center_text(self.how_to_play), config.menu_start_y + config.menu_y_space))
+        self.screen.blit(self.settings, (self.center_text(self.settings), config.menu_start_y +
                                          2 * config.menu_y_space))
-        self.screen.blit(self.credits, (center_text(self.credits), config.menu_start_y + 3 * config.menu_y_space))
+        self.screen.blit(self.credits, (self.center_text(self.credits), config.menu_start_y + 3 * config.menu_y_space))
         self.screen.blit(self.top_scores,
-                         (center_text(self.top_scores), config.menu_start_y + 4 * config.menu_y_space))
-        self.screen.blit(self.exit, (center_text(self.exit), config.menu_start_y + 5 * config.menu_y_space))
+                         (self.center_text(self.top_scores), config.menu_start_y + 4 * config.menu_y_space))
+        self.screen.blit(self.exit, (self.center_text(self.exit), config.menu_start_y + 5 * config.menu_y_space))
 
     def draw_settings(self):
         title = config.title_font.render('Settings', True, ORANGE)
-        center_x = center_text(title)
+        center_x = self.center_text(title)
         self.screen.blit(config.menu_bg, (0, 0))
         self.screen.blit(title, (center_x, config.y_const))
         fullscreen = config.menu_font.render('Fullscreen', True, RED if self.index % 6 == 0 else BLACK)
@@ -134,15 +135,15 @@ class Menu:
         if self.settings_active:
             for nr, blit in enumerate(blit_list):
                 if self.index % 6 == nr:
-                    self.screen.blit(config.red_left_arrow, (arrow_pos(blit), config.starting_y_pos +
+                    self.screen.blit(config.red_left_arrow, (self.arrow_pos(blit), config.starting_y_pos +
                                                              nr * config.y_const))
-                    self.screen.blit(config.red_right_arrow, (arrow_pos(blit, True), config.starting_y_pos +
+                    self.screen.blit(config.red_right_arrow, (self.arrow_pos(blit, True), config.starting_y_pos +
                                                               nr * config.y_const))
                     continue
 
     def draw_credits(self):
         title = config.title_font.render('Credits', True, ORANGE)
-        center_x = center_text(title)
+        center_x = self.center_text(title)
         self.screen.blit(config.menu_bg, (0, 0))
         self.screen.blit(title, (center_x, config.y_const))
         pygame.draw.rect(self.screen, (0, 0, 0),
@@ -160,15 +161,15 @@ class Menu:
     def draw_top_scores(self):
         self.screen.blit(config.menu_bg, (0, 0))
         title = config.title_font.render('TOP SCORES!', True, ORANGE)
-        center_x = center_text(title)
+        center_x = self.center_text(title)
         self.screen.blit(title, (center_x, config.y_const))
         if self.score_updated:
             my_score = config.top_scores_font.render('YOUR SCORE: ' + str(self.score), True, YELLOW)
-            self.screen.blit(my_score, (center_text(my_score), config.height - config.y_const))
+            self.screen.blit(my_score, (self.center_text(my_score), config.height - config.y_const))
         if self.nick_too_short:
             text_to_print = config.top_scores_font.render('NICK MUST CONTAIN AT LEAST 3 CHARS, 1 SPACE ALLOWED', True,
                                                           RED)
-            self.screen.blit(text_to_print, (center_text(text_to_print), config.height - 0.5 * config.y_const))
+            self.screen.blit(text_to_print, (self.center_text(text_to_print), config.height - 0.5 * config.y_const))
 
         pygame.draw.rect(self.screen, (0, 0, 0),
                          (config.width / 6, config.height / 3.75, config.width * 4 / 6, config.width / 2.9),
@@ -206,7 +207,7 @@ class Menu:
     def draw_how_to_play(self):
         self.screen.blit(config.menu_bg, (0, 0))
         title = config.title_font.render('HOW TO PLAY', True, ORANGE)
-        center_x = center_text(title)
+        center_x = self.center_text(title)
         self.screen.blit(title, (center_x, config.y_const))
 
         blit_list = [config.how_to_attack_move, config.how_to_pause, config.how_to_restart, config.how_to_escape]
@@ -224,16 +225,16 @@ class Menu:
                              border_radius=20)
             for nr, text in enumerate(texts):
                 text = config.menu_font.render(text, True, YELLOW)
-                self.screen.blit(text, (center_text(text), config.menu_start_y + ((config.width_tenth / 2) * nr)))
+                self.screen.blit(text, (self.center_text(text), config.menu_start_y + ((config.width_tenth / 2) * nr)))
 
         for nr, blit in enumerate(blit_list, 1):
             if self.lr_index % 5 == nr:
-                self.screen.blit(blit, (center_text(blit), config.menu_start_y - (config.width_tenth / 2)))
+                self.screen.blit(blit, (self.center_text(blit), config.menu_start_y - (config.width_tenth / 2)))
                 continue
 
-        self.screen.blit(config.yellow_left_arrow, (center_text(config.how_to_restart) - (config.width_tenth / 2) -
+        self.screen.blit(config.yellow_left_arrow, (self.center_text(config.how_to_restart) - (config.width_tenth / 2) -
                                                     config.yellow_left_arrow.get_width(), config.height / 2))
-        self.screen.blit(config.yellow_right_arrow, (center_text(config.how_to_restart) +
+        self.screen.blit(config.yellow_right_arrow, (self.center_text(config.how_to_restart) +
                                                      config.how_to_restart.get_width() + (config.width_tenth / 2),
                                                      config.height / 2))
 
@@ -292,6 +293,16 @@ class Menu:
         elif pygame.key.name(key) == 'space' and len(self.name) < 8 and ' ' not in self.name:
             self.name += ' '
         return self.name
+
+    @staticmethod
+    def center_text(width: pygame.Surface):
+        """Returns x position for text to be centered"""
+        return (config.width - width.get_width()) / 2
+
+    @staticmethod
+    def arrow_pos(text_width: pygame.Surface, right=False):
+        return config.text_pos - (150 * config.scale[0]) if not right else config.text_pos + text_width.get_width() + \
+            (150 * config.scale[0]) - config.red_left_arrow.get_width()
 
 
 menu = Menu()

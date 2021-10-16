@@ -1,4 +1,4 @@
-from static_methods import *
+import pygame
 from constants import *
 import sprites
 from player import Player
@@ -88,11 +88,11 @@ class ZombieStatus:
         self.zombie = zombie
         self.block_size = None
         if self.name == S_WALK:
-            self.index, self.count, self.elapsed = walk_props()
+            self.index, self.count, self.elapsed = self.walk_props()
             self.zombie.sprite = S_WALK
             self.update = self.walk_update
         elif self.name == S_ZOMBIE_DEAD:
-            self.index, self.count, self.elapsed = dead_props()
+            self.index, self.count, self.elapsed = self.dead_props()
             self.zombie.sprite = S_ZOMBIE_DEAD
             self.update = self.dead_update
 
@@ -114,3 +114,14 @@ class ZombieStatus:
         if self.elapsed > 0.5 and self.index < 4:
             self.index += 1
             self.elapsed = 0
+
+    @staticmethod
+    def walk_props():
+        index, count, elapsed = 0, 5, 0
+        return index, count, elapsed
+
+    @staticmethod
+    def dead_props():
+        index, count, elapsed = 0, 5, 0
+        return index, count, elapsed
+
